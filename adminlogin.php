@@ -1,0 +1,201 @@
+<?php
+session_start();
+include('db.php');
+if(isset($_POST['submit']))
+{
+	$email=$_POST['email'];
+	$pass=sha1($_POST['password']);
+	$sql=mysql_query("select * from register where email='$email'");
+
+	while($row=mysql_fetch_array($sql))
+	{
+		$emaildb=$row['email'];
+		$passdb=$row['password'];
+	}
+	if($email==$emaildb)
+	{
+		if($pass==$passdb)
+		{
+			$_SESSION['username']=$email;
+			header("Location:adminhome.php");
+		}
+		else
+		{
+			echo "<script>alert('Password Invalid');</script>";
+		}
+	}
+	else
+		{
+			echo "<script>alert('Email Invalid');</script>";
+		}
+}
+?>
+<!DOCTYPE HTML>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/style1.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="css/slider.css" rel="stylesheet" type="text/css" media="all"/>
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script> 
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+<script type="text/javascript" src="js/startstop-slider.js"></script>
+<style>
+		input.field { width:206px;padding:5px 5px 5px; }
+		.details{
+			border:1 px solid;
+		}
+		.details tr td{
+			 padding: 8px;
+			border-spacing: 10px;
+			border-collapse: separate;
+			
+		}
+	</style>
+<script>
+	$(document).ready(function(){
+		$('#email').on('change',function(){
+			//$(".emailvalidation").hide();
+			var email=$('#email').val();
+			var hasError = false;
+			var filter = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;		
+			if (filter.test(email))
+			{
+				$(".emailvalidation").hide();
+				//return true;
+				$.ajax({
+					type:'POST',
+					url:'emailvalid.php',
+					data:'email='+email,
+					success:function(data)
+					{
+						$('#emailtext').text(data);
+					}
+				})
+			}
+			else{
+				$('#email').val('');
+				$(".emailvalidation").text("Invalid email Address");
+				hasError = true;		
+			}
+			if(hasError == true) { return false; }
+		});	
+	});
+</script>
+</head>
+<body>
+  <div class="wrap" style="min-height:450px;">
+	<div class="header">
+		<div class="headertop_desc">
+			<div class="call">
+				 <div class="logo">
+				<a href="index.html"><img src="images/shwasa.jpg" alt="" height='100px' width='200px;'/></a>
+			</div>
+			</div>
+			
+			 <div class="cart">
+			  	   
+			  </div>
+			<div class="clear"></div>
+		</div>
+		<div class="header_top">
+			
+			  <script type="text/javascript">
+			function DropDown(el) {
+				this.dd = el;
+				this.initEvents();
+			}
+			DropDown.prototype = {
+				initEvents : function() {
+					var obj = this;
+
+					obj.dd.on('click', function(event){
+						$(this).toggleClass('active');
+						event.stopPropagation();
+					});	
+				}
+			}
+
+			$(function() {
+
+				var dd = new DropDown( $('#dd') );
+
+				$(document).click(function() {
+					// all dropdowns
+					$('.wrapper-dropdown-2').removeClass('active');
+				});
+
+			});
+
+		</script>
+	 <div class="clear"></div>
+  </div>
+	<div class="header_bottom">
+	     	<div class="menu">
+	     		<ul>
+			    	<li class="active"><a href="index.php">Home</a></li>
+			    	<!--<li><a href="mobile.php">Mobiles</a></li>
+			    	<li><a href="laptops.php">Laptops</a></li>
+			    	<li><a href="accessories.php">Accessories</a></li>-->
+			    	
+			    	<div class="clear"></div>
+     			</ul>
+	     	</div>
+	     	
+	     	<div class="clear"></div>
+	     </div>	     
+	<!--<div class="header_slide">
+			<div class="header_bottom_left">				
+				<div class="categories">
+				  <ul>
+				  	<h3>Categories</h3>
+				      <li><a href="#">Mobile Phones</a></li>
+				      <li><a href="#">Laptop</a></li>
+				      <li><a href="#">Accessories</a></li>
+				  </ul>
+				</div>					
+	  	     </div>
+					
+		   <div class="clear"></div>
+		</div>-->
+   </div>
+ <div class="main">
+    <div class="content">
+	<form method="post">
+		<div class="form-group">
+			<table class='details'>
+				<tr><td><label>Email</label></td>
+				<td><input type="text" class="field" name="email" id="email" required/></td><td class='emailvalidation' style='color:red'></td></tr>
+				<tr><td><label>Password</label></td>
+				<td><input type="password" class="field" name="password" id="password" required/></td></tr>
+			</table>
+		</div>
+		<div style='margin-left:80px;'>
+			<input type="submit" name='submit' class="search-submit" value="Submit">
+		</div>
+		</form>
+	<div class="section group">
+				
+				
+			</div>
+    </div>
+ </div>
+</div>
+   <div class="footer">
+   	  
+        <div class="copy_right">
+				<p>Company Name © All rights Reseverd | Design by  <a href="http://w3layouts.com">W3Layouts</a> </p>
+		   </div>
+    </div>
+    <script type="text/javascript">
+		$(document).ready(function() {			
+			$().UItoTop({ easingType: 'easeOutQuart' });
+			
+		});
+	</script>
+    <a href="#" id="toTop"><span id="toTopHover"> </span></a>
+</body>
+</html>
+
